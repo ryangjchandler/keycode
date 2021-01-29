@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Key Code - ryangjchandler.co.uk</title>
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.js" defer></script>
+</head>
+<body class="antialiased font-mono text-normal bg-blue-500 flex items-center justify-center min-w-screen min-h-screen">
+    <div class="w-full">
+        <header class="max-w-lg text-white mx-auto space-y-4">
+            <h1 class="text-3xl">Key Code</h1>
+            <p class="text-sm">Press a key to get more information.</p>
+        </header>
+    
+        <main x-data="keyCode()" @keydown.window.prevent="updateInfo" class="max-w-lg text-white mx-auto space-y-4 my-6">
+            <template x-for="[k, v] in info" :key="k">
+                <div @click="copyToClipboard(v)" title="Click to copy to clipboard." class="grid grid-cols-2 border-2 border-blue-600 px-4 py-2 cursor-pointer">
+                    <p x-text="k"></p>
+                    <p x-text="v" class="text-right"></p>
+                </div>
+            </template>
+        </main>
+
+        <footer class="max-w-lg mx-auto text-blue-900 text-right">
+            <small>Brought to you by <a href="https://ryangjchandler.co.uk" target="_blank" class="underline">Ryan Chandler</a>.</small>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@ryangjchandler/alpine-clipboard@0.1.x/dist/alpine-clipboard.umd.js"></script>
+
+    <script>
+        function keyCode() {
+            return {
+                which: null,
+                shiftKey: null,
+                ctrlKey: null,
+                altKey: null,
+                metaKey: null,
+                key: null,
+                keyCode: null,
+                code: null,
+                message: '',
+                updateInfo($event) {
+                    this.which = $event.which
+                    this.shiftKey = $event.shiftKey
+                    this.ctrlKey = $event.ctrlKey
+                    this.altKey = $event.altKey
+                    this.metaKey = $event.metaKey
+                    this.key = $event.key
+                    this.keyCode = $event.keyCode
+                    this.code = $event.code
+                },
+                get info() {
+                    return Object.keys(this)
+                        .filter(k => !['info', 'message'].includes(k) && ! k.startsWith('$') && typeof this[k] !== 'function')
+                        .map(k => [k, this[k]])
+                },
+                copyToClipboard(v) {
+                    this.$clipboard(v)
+
+                    this.message = 'Copied to clipboard!'
+                }
+            }
+        }
+    </script>
+</body>
+</html>
