@@ -8,13 +8,19 @@
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.js" defer></script>
 </head>
 <body class="antialiased font-mono text-normal bg-blue-500 flex items-center justify-center min-w-screen min-h-screen">
-    <div class="w-full">
-        <header class="max-w-lg text-white mx-auto space-y-4">
-            <h1 class="text-3xl">Key Code</h1>
-            <p class="text-sm">Press a key to get more information.</p>
+    <div x-data="keyCode()" class="w-full">
+        <header class="max-w-lg flex items-end justify-between text-white mx-auto">
+            <div class="space-y-2">
+                <h1 class="text-3xl">Key Code</h1>
+                <p class="text-sm">Press a key to get more information.</p>
+            </div>
+
+            <div x-show.transition.duration.500ms="!! message">
+                <p x-text="message" class="text-sm font-medium text-yellow-500"></p>
+            </div>
         </header>
     
-        <main x-data="keyCode()" @keydown.window.prevent="updateInfo" class="max-w-lg text-white mx-auto space-y-4 my-6">
+        <main @keydown.window="updateInfo" class="max-w-lg text-white mx-auto space-y-4 my-6">
             <template x-for="[k, v] in info" :key="k">
                 <div @click="copyToClipboard(v)" title="Click to copy to clipboard." class="grid grid-cols-2 border-2 border-blue-600 px-4 py-2 cursor-pointer">
                     <p x-text="k"></p>
@@ -61,6 +67,10 @@
                     this.$clipboard(v)
 
                     this.message = 'Copied to clipboard!'
+
+                    setTimeout(() => {
+                        this.message = ''
+                    }, 2500)
                 }
             }
         }
